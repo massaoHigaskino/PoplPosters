@@ -12,11 +12,21 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        def pMovieDBParamApiKey = 'MOVIE_DB_PARAM_API_KEY'
+
+        debug {
+            buildConfigField 'String[]', pMovieDBParamApiKey, '{"api_key", null}'
+        }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String[]', pMovieDBParamApiKey, '{"api_key", null}'
         }
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -26,5 +36,9 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:recyclerview-v7:25.3.0'
+
     testCompile 'junit:junit:4.12'
 }
