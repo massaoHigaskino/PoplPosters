@@ -2,7 +2,7 @@ package br.com.mm.adcertproj.poplposters.pref;
 
 import br.com.mm.adcertproj.poplposters.BuildConfig;
 
-public class MovieDBPreferences {
+public class MDBPreferences {
     private static String paramApiKey;
     private static String valueApiKey;
 
@@ -16,7 +16,7 @@ public class MovieDBPreferences {
     }
 
     public static void setParamApiKey(String paramApiKey) {
-        MovieDBPreferences.paramApiKey = paramApiKey;
+        MDBPreferences.paramApiKey = paramApiKey;
     }
 
     public static String getValueApiKey() {
@@ -24,6 +24,6 @@ public class MovieDBPreferences {
     }
 
     public static void setValueApiKey(String valueApiKey) {
-        MovieDBPreferences.valueApiKey = valueApiKey;
+        MDBPreferences.valueApiKey = valueApiKey;
     }
 }

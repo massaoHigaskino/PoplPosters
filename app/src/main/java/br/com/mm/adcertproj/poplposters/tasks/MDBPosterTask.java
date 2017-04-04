@@ -2,7 +2,7 @@ package br.com.mm.adcertproj.poplposters.tasks;
 
 import android.os.AsyncTask;
 
-public class MovieDBPopularTask extends AsyncTask<Void, Void, MovieDBPopularTask.TaskResult> {
+public class MDBPosterTask extends AsyncTask<Void, Void, MDBPosterTask.TaskResult> {
 
     @Override
     protected TaskResult doInBackground(Void... params) {

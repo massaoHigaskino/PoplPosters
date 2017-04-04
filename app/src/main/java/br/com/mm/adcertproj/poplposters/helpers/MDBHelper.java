@@ -9,9 +9,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import br.com.mm.adcertproj.poplposters.R;
-import br.com.mm.adcertproj.poplposters.pref.MovieDBPreferences;
+import br.com.mm.adcertproj.poplposters.pref.MDBPreferences;
 
-public class MovieDBHelper {
+public class MDBHelper {
     public void showApiKeyInput(Context context, final IApiKeyInput listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -33,7 +33,7 @@ public class MovieDBHelper {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(!StringHelper.isNullOrEmpty(inputKey.getText().toString())) {
-                    MovieDBPreferences.setValueApiKey(inputKey.getText().toString());
+                    MDBPreferences.setValueApiKey(inputKey.getText().toString());
                 }
                 if(listener != null) {
                     listener.onApiKeyInput();
