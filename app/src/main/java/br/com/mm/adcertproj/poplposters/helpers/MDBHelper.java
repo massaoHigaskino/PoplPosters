@@ -12,7 +12,8 @@ import br.com.mm.adcertproj.poplposters.R;
 import br.com.mm.adcertproj.poplposters.pref.MDBPreferences;
 
 public class MDBHelper {
-    public void showApiKeyInput(Context context, final IApiKeyInput listener) {
+
+    public static void showApiKeyInput(Context context, final IApiKeyInput listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
         builder.setTitle(context.getString(R.string.mdb_apikey_input_title));

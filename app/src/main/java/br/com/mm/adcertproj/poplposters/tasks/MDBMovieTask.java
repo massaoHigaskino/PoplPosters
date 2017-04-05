@@ -1,12 +1,22 @@
 package br.com.mm.adcertproj.poplposters.tasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
-/**
- * Created by massao on 03.04.17.
- */
+import br.com.mm.adcertproj.poplposters.helpers.AsyncTaskHelper;
 
 public class MDBMovieTask extends AsyncTask<Void, Void, MDBMovieTask.TaskResult> {
+
+    private Context context;
+
+    public MDBMovieTask(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        AsyncTaskHelper.showProgressDialog(context);
+    }
 
     @Override
     protected TaskResult doInBackground(Void... params) {
@@ -15,7 +25,7 @@ public class MDBMovieTask extends AsyncTask<Void, Void, MDBMovieTask.TaskResult>
 
     @Override
     protected void onPostExecute(TaskResult taskResult) {
-        super.onPostExecute(taskResult);
+        AsyncTaskHelper.dismissProgressDialog();
     }
 
     class TaskResult {
