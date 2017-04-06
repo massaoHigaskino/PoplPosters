@@ -5,4 +5,9 @@
         android:id="@+id/action_sort"
         android:title="@string/sort"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_enter_key"
+        android:title="@string/enter_key"
+        app:showAsAction="never"
+        android:visible="false"/>
 </menu>

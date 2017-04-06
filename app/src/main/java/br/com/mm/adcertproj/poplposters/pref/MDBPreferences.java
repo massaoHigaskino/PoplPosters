@@ -8,12 +8,15 @@ import java.net.URL;
 import br.com.mm.adcertproj.poplposters.BuildConfig;
 
 public class MDBPreferences {
-    public static final String POPULAR_MOVIES_URL = "http://api.themoviedb.org/3/movie/popular";
+    public static final String POPULAR_MOVIES_URL = "http://api.themoviedb.org/3/movie/";
+    public static final String SORT_POPULAR = "popular";
+    public static final String SORT_TOP_RATED = "top_rated";
     public static final String POSTER_BASE_URL = "http://image.tmdb.org/t/p/";
     public static final String[] POSTER_SIZES = {"w92/", "w154/", "w185/", "w342/", "w500/", "w780/", "original/"};
     public static final int POSTER_DEFAULT_SIZE_IDX = 2;
     private static String paramApiKey;
     private static String valueApiKey;
+    private static String sortType = SORT_POPULAR;
 
     static {
         paramApiKey = BuildConfig.MOVIE_DB_PARAM_API_KEY[0];
@@ -41,7 +44,7 @@ public class MDBPreferences {
     }
 
     public static URL buildPopMoviesQueryUrl() {
-        Uri popMoviesQueryUri = Uri.parse(POPULAR_MOVIES_URL).buildUpon()
+        Uri popMoviesQueryUri = Uri.parse(POPULAR_MOVIES_URL + sortType).buildUpon()
                 .appendQueryParameter(paramApiKey, valueApiKey).build();
         URL popMoviesQueryUrl = null;
         try {
@@ -50,5 +53,9 @@ public class MDBPreferences {
             e.printStackTrace();
         }
         return popMoviesQueryUrl;
+    }
+
+    public static void setSortType(String sortType) {
+        MDBPreferences.sortType = sortType;
     }
 }

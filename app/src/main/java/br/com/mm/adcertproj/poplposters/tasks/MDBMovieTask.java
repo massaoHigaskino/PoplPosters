@@ -2,15 +2,21 @@ package br.com.mm.adcertproj.poplposters.tasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import br.com.mm.adcertproj.poplposters.helpers.AsyncTaskHelper;
+import br.com.mm.adcertproj.poplposters.model.MDBMovie;
+import br.com.mm.adcertproj.poplposters.pref.MDBPreferences;
 
-public class MDBMovieTask extends AsyncTask<Void, Void, MDBMovieTask.TaskResult> {
+public class MDBMovieTask extends AsyncTask<Void, Void, MDBMovie[]> {
 
     private Context context;
+    private MDBMovieTaskListener mTaskResultListerner;
+    private int retries = 1;
 
-    public MDBMovieTask(Context context) {
+    public MDBMovieTask(Context context, MDBMovieTaskListener listener) {
         this.context = context;
+        this.mTaskResultListerner = listener;
     }
 
     @Override
@@ -19,16 +25,24 @@ public class MDBMovieTask extends AsyncTask<Void, Void, MDBMovieTask.TaskResult>
     }
 
     @Override
-    protected TaskResult doInBackground(Void... params) {
-        return null;
+    protected MDBMovie[] doInBackground(Void... params) {
+        MDBMovie[] taskResult = null;
+        try {
+            String jsonResponse = AsyncTaskHelper.getResponseFromHttpUrl(MDBPreferences.buildPopMoviesQueryUrl());
+            taskResult = MDBMovie.listFromJSON(jsonResponse);
+        } catch (Throwable t) {
+            Log.e(this.getClass().getName(), t.getMessage());
+        }
+        return taskResult;
     }
 
     @Override
-    protected void onPostExecute(TaskResult taskResult) {
+    protected void onPostExecute(MDBMovie[] mdbMovieArray) {
         AsyncTaskHelper.dismissProgressDialog();
+        mTaskResultListerner.onTaskResult(mdbMovieArray);
     }
 
-    class TaskResult {
-
+    public interface MDBMovieTaskListener {
+        void onTaskResult(MDBMovie[] taskResultArray);
     }
 }

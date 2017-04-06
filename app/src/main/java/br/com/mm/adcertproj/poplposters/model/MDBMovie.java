@@ -3,11 +3,14 @@ package br.com.mm.adcertproj.poplposters.model;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import br.com.mm.adcertproj.poplposters.helpers.JSONHelper;
 
-public class MDBMovie {
+public class MDBMovie implements Serializable {
+    public static final int serialVersionUID = 1;
+
     private static final String MDM_RESULTS = "results";
     private static final String MDM_POSTER_PATH = "poster_path";
     private static final String MDM_ADULT = "adult";
@@ -28,6 +31,7 @@ public class MDBMovie {
     private Boolean adult; // "adult": false,
     private String overview; // "overview": "After his career is destroyed, a brilliant but arrogant surgeon gets a new lease on life when a sorcerer takes him under his wing and trains him to defend the world against evil.",
     private Date releaseDate; // "release_date": "2016-10-25",
+    private String releaseDateString;
     private Integer[] genreIds; // "genre_ids": [ 28, 12, 14, 878 ],
     private Integer id; // "id": 284052,
     private String originalTitle; // "original_title": "Doctor Strange",
@@ -69,6 +73,14 @@ public class MDBMovie {
 
     public void setReleaseDate(Date releaseDate) {
         this.releaseDate = releaseDate;
+    }
+
+    public String getReleaseDateString() {
+        return releaseDateString;
+    }
+
+    public void setReleaseDateString(String releaseDateString) {
+        this.releaseDateString = releaseDateString;
     }
 
     public Integer[] getGenreIds() {
@@ -167,6 +179,7 @@ public class MDBMovie {
                         movie.setAdult(movieJson.optBoolean(MDM_ADULT));
                         movie.setOverview(movieJson.optString(MDM_OVERVIEW));
                         movie.setReleaseDate(JSONHelper.getDate(movieJson, MDM_RELEASE_DATE));
+                        movie.setReleaseDateString(movieJson.optString(MDM_RELEASE_DATE));
                         movie.setGenreIds(JSONHelper.getIntArray(movieJson, MDM_GENRE_IDS));
                         movie.setId(movieJson.optInt(MDM_ID));
                         movie.setOriginalTitle(movieJson.optString(MDM_ORIGINAL_TITLE));
