@@ -15,11 +15,13 @@ android {
         def pMovieDBParamApiKey = 'MOVIE_DB_PARAM_API_KEY'
 
         debug {
+            // TODO MDB API Key goes here, at the second parameter
             buildConfigField 'String[]', pMovieDBParamApiKey, '{"api_key", null}'
         }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // TODO MDB API Key goes here, at the second parameter
             buildConfigField 'String[]', pMovieDBParamApiKey, '{"api_key", null}'
         }
     }

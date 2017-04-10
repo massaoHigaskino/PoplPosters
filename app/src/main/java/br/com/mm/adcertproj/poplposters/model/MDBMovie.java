@@ -9,6 +9,8 @@ import java.util.Date;
 import br.com.mm.adcertproj.poplposters.helpers.JSONHelper;
 
 public class MDBMovie implements Serializable {
+
+    //region ATTRIBUTES
     public static final int serialVersionUID = 1;
 
     private static final String MDM_RESULTS = "results";
@@ -42,7 +44,9 @@ public class MDBMovie implements Serializable {
     private Integer voteCount; // "vote_count": 3206,
     private Boolean video; // "video": false,
     private Double voteAverage; // "vote_average": 6.9
+    // endregion
 
+    // region GETTERS & SETTERS
     public String getPosterPath() {
         return posterPath;
     }
@@ -162,7 +166,9 @@ public class MDBMovie implements Serializable {
     public void setVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
     }
+    // endregion
 
+    // region PUBLIC METHODS
     public static MDBMovie[] listFromJSON(String json) {
         MDBMovie[] moviesArray = null;
         JSONObject mdbJson = JSONHelper.getJSONObject(json);
@@ -197,4 +203,5 @@ public class MDBMovie implements Serializable {
         }
         return moviesArray;
     }
+    // endregion
 }

@@ -13,6 +13,7 @@ import br.com.mm.adcertproj.poplposters.pref.MDBPreferences;
 
 public class MovieActivity extends AppCompatActivity {
 
+    // region ATTRIBUTES
     public static final String EXTRA_MOVIE_KEY = "mdbMovieObj";
 
     private ImageView mPosterImageView;
@@ -20,7 +21,9 @@ public class MovieActivity extends AppCompatActivity {
     private TextView mRelDateTextView;
     private TextView mVoteAveTextView;
     private TextView mSynopsisTextView;
+    // endregion
 
+    // region PROTECTED METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,4 +48,5 @@ public class MovieActivity extends AppCompatActivity {
             }
         }
     }
+    // endregion
 }

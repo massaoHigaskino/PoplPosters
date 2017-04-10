@@ -15,13 +15,16 @@ import br.com.mm.adcertproj.poplposters.pref.MDBPreferences;
 
 public class PostersAdapter extends RecyclerView.Adapter<PostersAdapter.PostersViewHolder> {
 
+    // region ATTRIBUTES
     private final PostersClickListener mClickHandler;
     private MDBMovie[] mMovies;
+    // endregion
 
     public PostersAdapter(PostersClickListener listener) {
         mClickHandler = listener;
     }
 
+    // region PUBLIC METHODS
     public void setMovies(MDBMovie[] movies) {
         mMovies = movies;
         notifyDataSetChanged();
@@ -46,8 +49,9 @@ public class PostersAdapter extends RecyclerView.Adapter<PostersAdapter.PostersV
     public int getItemCount() {
         return mMovies != null ? mMovies.length : 0;
     }
+    // endregion
 
-
+    // region AUXILIARY CLASSES
     public interface PostersClickListener {
         void onPostersClick(MDBMovie movie);
     }
@@ -76,4 +80,5 @@ public class PostersAdapter extends RecyclerView.Adapter<PostersAdapter.PostersV
             Picasso.with(context).load(MDBPreferences.buildPosterUrl(movie.getPosterPath())).into(posterImageView);
         }
     }
+    // endregion
 }

@@ -8,6 +8,8 @@ import java.net.URL;
 import br.com.mm.adcertproj.poplposters.BuildConfig;
 
 public class MDBPreferences {
+
+    // region ATTRIBUTES
     public static final String POPULAR_MOVIES_URL = "http://api.themoviedb.org/3/movie/";
     public static final String SORT_POPULAR = "popular";
     public static final String SORT_TOP_RATED = "top_rated";
@@ -22,14 +24,12 @@ public class MDBPreferences {
         paramApiKey = BuildConfig.MOVIE_DB_PARAM_API_KEY[0];
         valueApiKey = BuildConfig.MOVIE_DB_PARAM_API_KEY[1];
     }
+    // endregion
 
+    // region GETTERS & SETTERS
     public static String getParamApiKey() {
         return paramApiKey;
     }
-
-//    public static void setParamApiKey(String paramApiKey) {
-//        MDBPreferences.paramApiKey = paramApiKey;
-//    }
 
     public static String getValueApiKey() {
         return valueApiKey;
@@ -39,6 +39,12 @@ public class MDBPreferences {
         MDBPreferences.valueApiKey = valueApiKey;
     }
 
+    public static void setSortType(String sortType) {
+        MDBPreferences.sortType = sortType;
+    }
+    // endregion
+
+    // region PUBLIC METHODS
     public static String buildPosterUrl(String posterPath) {
         return POSTER_BASE_URL + POSTER_SIZES[POSTER_DEFAULT_SIZE_IDX] + posterPath;
     }
@@ -54,8 +60,5 @@ public class MDBPreferences {
         }
         return popMoviesQueryUrl;
     }
-
-    public static void setSortType(String sortType) {
-        MDBPreferences.sortType = sortType;
-    }
+    //endregion
 }

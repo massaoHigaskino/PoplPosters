@@ -8,6 +8,7 @@
     <string name="movie_release_date">Release Date</string>
     <string name="movie_vote_average">Vote Average</string>
     <string name="movie_plot_synopsis">Plot Synopsis</string>
+    <string name="movie_poster_alt">Current selected movie poster.</string>
 
     <!-- Dialog -->
     <string name="ok_button">OK</string>

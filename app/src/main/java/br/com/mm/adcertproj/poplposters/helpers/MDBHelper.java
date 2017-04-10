@@ -14,6 +14,7 @@ import br.com.mm.adcertproj.poplposters.pref.MDBPreferences;
 
 public class MDBHelper {
 
+    // region PUBLIC METHODS
     public static void showSortSpinner(Context context, final IApiKeyInput listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -70,8 +71,12 @@ public class MDBHelper {
 
         builder.show();
     }
+    // endregion
 
+    // region AUXILIARY CLASSES
     public interface IApiKeyInput {
         void onApiKeyInput();
     }
+    // endregion
+
 }

@@ -19,14 +19,15 @@ import br.com.mm.adcertproj.poplposters.tasks.MDBMovieTask;
 public class PostersActivity extends AppCompatActivity
         implements PostersAdapter.PostersClickListener, MDBMovieTask.MDBMovieTaskListener, MDBHelper.IApiKeyInput{
 
+    //region ATTRIBUTES
     public static final String EXTRA_MOVIE_KEY = "mdbMovieObj";
 
     private RecyclerView mRecyclerView;
     private PostersAdapter mPostersAdapter;
     private TextView mErrorTextView;
-//    private TextView mDebugWarningTextView;
-//    private LinearLayout mErrorContainer;
+    // endregion
 
+    // region PROTECTED METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +36,6 @@ public class PostersActivity extends AppCompatActivity
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_posters);
         mPostersAdapter = new PostersAdapter(this);
         mErrorTextView = (TextView) findViewById(R.id.tv_error);
-//        mDebugWarningTextView = (TextView) findViewById(R.id.tv_debug_warning);
-//        mErrorContainer = (LinearLayout) findViewById(R.id.error_container);
 
         GridLayoutManager layoutManager =
                 new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
@@ -60,7 +59,9 @@ public class PostersActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
     }
+    // endregion
 
+    // region PUBLIC METHODS
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -105,7 +106,9 @@ public class PostersActivity extends AppCompatActivity
     public void onApiKeyInput() {
         startMovieTask();
     }
+    // endregion
 
+    // region PRIVATE METHODS
     private void startMovieTask() {
         new MDBMovieTask(this, this).execute();
     }
@@ -113,16 +116,11 @@ public class PostersActivity extends AppCompatActivity
     private void showResults() {
         mErrorTextView.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
-//        mDebugWarningTextView.setVisibility(View.INVISIBLE);
-//        mErrorContainer.setVisibility(View.INVISIBLE);
     }
 
     private void showError() {
         mErrorTextView.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
-        if(BuildConfig.DEBUG) {
-//            mDebugWarningTextView.setVisibility(View.VISIBLE);
-        }
-//        mErrorContainer.setVisibility(View.VISIBLE);
     }
+    // endregion
 }

@@ -12,7 +12,11 @@ import java.util.Scanner;
 import br.com.mm.adcertproj.poplposters.R;
 
 public class AsyncTaskHelper {
+    // region ATTRIBUTES
     private static ProgressDialog progressDialog;
+    // endregion
+
+    // region PUBLIC METHODS
     public static void showProgressDialog(Context context) {
         dismissProgressDialog();
 
@@ -55,4 +59,5 @@ public class AsyncTaskHelper {
             urlConnection.disconnect();
         }
     }
+    // endregion
 }

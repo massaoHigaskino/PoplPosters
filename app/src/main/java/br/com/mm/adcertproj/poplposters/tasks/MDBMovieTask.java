@@ -10,15 +10,18 @@ import br.com.mm.adcertproj.poplposters.pref.MDBPreferences;
 
 public class MDBMovieTask extends AsyncTask<Void, Void, MDBMovie[]> {
 
+    // region ATTRIBUTES
     private Context context;
     private MDBMovieTaskListener mTaskResultListerner;
     private int retries = 1;
+    // endregion
 
     public MDBMovieTask(Context context, MDBMovieTaskListener listener) {
         this.context = context;
         this.mTaskResultListerner = listener;
     }
 
+    // region PROTECTED METHODS
     @Override
     protected void onPreExecute() {
         AsyncTaskHelper.showProgressDialog(context);
@@ -41,8 +44,12 @@ public class MDBMovieTask extends AsyncTask<Void, Void, MDBMovie[]> {
         AsyncTaskHelper.dismissProgressDialog();
         mTaskResultListerner.onTaskResult(mdbMovieArray);
     }
+    // endregion
 
+    // region AUXILIARY CLASSES
     public interface MDBMovieTaskListener {
         void onTaskResult(MDBMovie[] taskResultArray);
     }
+    // endregion
+
 }

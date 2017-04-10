@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class JSONHelper {
 
+    // region PUBLIC METHODS
     public static JSONObject getJSONObject(String json) {
         JSONObject value = null;
         try {
@@ -182,7 +183,9 @@ public class JSONHelper {
     }
 
     public static Date getDate(JSONObject jsonObject, String name) {
-        // TODO implement getDate using US format
-        return null;
+        String sDate = getString(jsonObject, name);
+        return DateHelper.tryFromString(sDate);
     }
+    // endregion
+
 }
