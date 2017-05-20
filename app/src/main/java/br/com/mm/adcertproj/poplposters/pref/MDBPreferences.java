@@ -27,14 +27,6 @@ public class MDBPreferences {
     // endregion
 
     // region GETTERS & SETTERS
-    public static String getParamApiKey() {
-        return paramApiKey;
-    }
-
-    public static String getValueApiKey() {
-        return valueApiKey;
-    }
-
     public static void setValueApiKey(String valueApiKey) {
         MDBPreferences.valueApiKey = valueApiKey;
     }
