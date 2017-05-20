@@ -13,7 +13,6 @@ public class MDBMovieTask extends AsyncTask<Void, Void, MDBMovie[]> {
     // region ATTRIBUTES
     private Context context;
     private MDBMovieTaskListener mTaskResultListerner;
-    private int retries = 1;
     // endregion
 
     public MDBMovieTask(Context context, MDBMovieTaskListener listener) {
