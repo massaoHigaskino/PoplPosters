@@ -1,49 +1,81 @@
 package br.com.mm.adcertproj.poplposters.model;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import br.com.mm.adcertproj.poplposters.helpers.JSONHelper;
 
 public class MDBMovie implements Serializable {
 
     //region ATTRIBUTES
     public static final int serialVersionUID = 1;
 
-    private static final String MDM_RESULTS = "results";
-    private static final String MDM_POSTER_PATH = "poster_path";
-    private static final String MDM_ADULT = "adult";
-    private static final String MDM_OVERVIEW = "overview";
-    private static final String MDM_RELEASE_DATE = "release_date";
-    private static final String MDM_GENRE_IDS = "genre_ids";
-    private static final String MDM_ID = "id";
-    private static final String MDM_ORIGINAL_TITLE = "original_title";
-    private static final String MDM_ORIGINAL_LANGUAGE = "original_language";
-    private static final String MDM_TITLE = "title";
-    private static final String MDM_BACKDROP_PATH = "backdrop_path";
-    private static final String MDM_POPULARITY = "popularity";
-    private static final String MDM_VOTE_COUNT = "vote_count";
-    private static final String MDM_VIDEO = "video";
-    private static final String MDM_VOTE_AVERAGE = "vote_average";
+    /**
+     * Attribute name of the movie list, which is returned nested into the json response.
+     */
+    public static final String MDM_RESULTS = "results";
 
-    private String posterPath; // "poster_path": "/4PiiNGXj1KENTmCBHeN6Mskj2Fq.jpg",
-    private Boolean adult; // "adult": false,
-    private String overview; // "overview": "After his career is destroyed, a brilliant but arrogant surgeon gets a new lease on life when a sorcerer takes him under his wing and trains him to defend the world against evil.",
-    private Date releaseDate; // "release_date": "2016-10-25",
+    @SerializedName("poster_path")
+    @Expose
+    private String posterPath;
+
+    @SerializedName("adult")
+    @Expose
+    private Boolean adult;
+
+    @SerializedName("overview")
+    @Expose
+    private String overview;
+
+    private Date releaseDate;
+
+    @SerializedName("release_date")
+    @Expose
     private String releaseDateString;
-    private Integer[] genreIds; // "genre_ids": [ 28, 12, 14, 878 ],
-    private Integer id; // "id": 284052,
-    private String originalTitle; // "original_title": "Doctor Strange",
-    private String originalLanguage; // "original_language": "en",
-    private String title; // "title": "Doctor Strange",
-    private String backdropPath; // "backdrop_path": "/tFI8VLMgSTTU38i8TIsklfqS9Nl.jpg",
-    private Double popularity; // "popularity": 21.287906,
-    private Integer voteCount; // "vote_count": 3206,
-    private Boolean video; // "video": false,
-    private Double voteAverage; // "vote_average": 6.9
+
+    @SerializedName("genre_ids")
+    @Expose
+    private Integer[] genreIds;
+
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+
+    @SerializedName("original_title")
+    @Expose
+    private String originalTitle;
+
+    @SerializedName("original_language")
+    @Expose
+    private String originalLanguage;
+
+    @SerializedName("title")
+    @Expose
+    private String title;
+
+    @SerializedName("backdrop_path")
+    @Expose
+    private String backdropPath;
+
+    @SerializedName("popularity")
+    @Expose
+    private Double popularity;
+
+    @SerializedName("vote_count")
+    @Expose
+    private Integer voteCount;
+
+    @SerializedName("video")
+    @Expose
+    private Boolean video;
+
+    @SerializedName("vote_average")
+    @Expose
+    private Double voteAverage;
     // endregion
 
     // region GETTERS & SETTERS
@@ -169,39 +201,12 @@ public class MDBMovie implements Serializable {
     // endregion
 
     // region PUBLIC METHODS
-    public static MDBMovie[] listFromJSON(String json) {
-        MDBMovie[] moviesArray = null;
-        JSONObject mdbJson = JSONHelper.getJSONObject(json);
-        if(mdbJson != null) {
-            JSONArray moviesJson = JSONHelper.getJSONArray(mdbJson, MDM_RESULTS);
-            if(moviesJson != null && moviesJson.length() > 0) {
-                moviesArray = new MDBMovie[moviesJson.length()];
-                for(int i = 0; i < moviesJson.length(); i++) {
-                    JSONObject movieJson = moviesJson.optJSONObject(i);
-                    MDBMovie movie = null;
-                    if(movieJson != null) {
-                        movie = new MDBMovie();
-                        movie.setPosterPath(movieJson.optString(MDM_POSTER_PATH));
-                        movie.setAdult(movieJson.optBoolean(MDM_ADULT));
-                        movie.setOverview(movieJson.optString(MDM_OVERVIEW));
-                        movie.setReleaseDate(JSONHelper.getDate(movieJson, MDM_RELEASE_DATE));
-                        movie.setReleaseDateString(movieJson.optString(MDM_RELEASE_DATE));
-                        movie.setGenreIds(JSONHelper.getIntArray(movieJson, MDM_GENRE_IDS));
-                        movie.setId(movieJson.optInt(MDM_ID));
-                        movie.setOriginalTitle(movieJson.optString(MDM_ORIGINAL_TITLE));
-                        movie.setOriginalLanguage(movieJson.optString(MDM_ORIGINAL_LANGUAGE));
-                        movie.setTitle(movieJson.optString(MDM_TITLE));
-                        movie.setBackdropPath(movieJson.optString(MDM_BACKDROP_PATH));
-                        movie.setPopularity(movieJson.optDouble(MDM_POPULARITY));
-                        movie.setVoteCount(movieJson.optInt(MDM_VOTE_COUNT));
-                        movie.setVideo(movieJson.optBoolean(MDM_VIDEO));
-                        movie.setVoteAverage(movieJson.optDouble(MDM_VOTE_AVERAGE));
-                    }
-                    moviesArray[i] = movie;
-                }
-            }
-        }
-        return moviesArray;
+    public static MDBMovie[] listFromGson(String json) throws JsonParseException {
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(MDBMovie[].class, new MDBDeserializer<MDBMovie[]>(MDM_RESULTS))
+                .create();
+        return gson.fromJson(json, MDBMovie[].class);
     }
     // endregion
 }

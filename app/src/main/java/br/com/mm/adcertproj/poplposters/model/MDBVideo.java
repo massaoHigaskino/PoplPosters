@@ -1,24 +1,33 @@
 package br.com.mm.adcertproj.poplposters.model;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-
-import br.com.mm.adcertproj.poplposters.helpers.JSONHelper;
 
 public class MDBVideo implements Serializable {
 
     //region ATTRIBUTES
     public static final int serialVersionUID = 1;
 
-    private static final String MDM_ID = "id";
-    private static final String MDM_RESULTS = "results";
-    private static final String MDM_KEY = "key";
-    private static final String MDM_NAME = "name";
+    /**
+     * Attribute name of the movie list, which is returned nested into the json response.
+     */
+    public static final String MDM_RESULTS = "results";
 
+    @SerializedName("id")
+    @Expose
     private String id;
+
+    @SerializedName("key")
+    @Expose
     private String key;
+
+    @SerializedName("name")
+    @Expose
     private String name;
     //endregion
 
@@ -49,27 +58,12 @@ public class MDBVideo implements Serializable {
     //endregion
 
     // region PUBLIC METHODS
-    public static MDBVideo[] listFromJSON(String json) {
-        MDBVideo[] videosArray = null;
-        JSONObject mdbJson = JSONHelper.getJSONObject(json);
-        if(mdbJson != null) {
-            JSONArray videosJson = JSONHelper.getJSONArray(mdbJson, MDM_RESULTS);
-            if(videosJson != null && videosJson.length() > 0) {
-                videosArray = new MDBVideo[videosJson.length()];
-                for(int i = 0; i < videosJson.length(); i++) {
-                    JSONObject videoJson = videosJson.optJSONObject(i);
-                    MDBVideo video = null;
-                    if(videoJson != null) {
-                        video = new MDBVideo();
-                        video.setId(videoJson.optString(MDM_ID));
-                        video.setKey(videoJson.optString(MDM_KEY));
-                        video.setName(videoJson.optString(MDM_NAME));
-                    }
-                    videosArray[i] = video;
-                }
-            }
-        }
-        return videosArray;
+    public static MDBVideo[] listFromGson(String json) throws JsonParseException {
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(MDBVideo[].class, new MDBDeserializer<MDBVideo[]>(MDM_RESULTS))
+                .create();
+        return gson.fromJson(json, MDBVideo[].class);
     }
     //endregion
 }

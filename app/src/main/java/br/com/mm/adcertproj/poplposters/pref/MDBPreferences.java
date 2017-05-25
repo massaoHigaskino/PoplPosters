@@ -43,6 +43,10 @@ public class MDBPreferences {
         MDBPreferences.valueApiKey = valueApiKey;
     }
 
+    public static String getSortType() {
+        return MDBPreferences.sortType;
+    }
+
     public static void setSortType(String sortType) {
         MDBPreferences.sortType = sortType;
     }

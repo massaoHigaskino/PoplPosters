@@ -14,10 +14,10 @@ import android.widget.TextView;
 import br.com.mm.adcertproj.poplposters.adapter.PostersAdapter;
 import br.com.mm.adcertproj.poplposters.helpers.MDBHelper;
 import br.com.mm.adcertproj.poplposters.model.MDBMovie;
-import br.com.mm.adcertproj.poplposters.tasks.MDBMovieTask;
+import br.com.mm.adcertproj.poplposters.tasks.MDBRetrofit;
 
 public class PostersActivity extends AppCompatActivity
-        implements PostersAdapter.PostersClickListener, MDBMovieTask.MDBMovieTaskListener, MDBHelper.IApiKeyInput{
+        implements PostersAdapter.PostersClickListener, MDBRetrofit.MDBMovieTaskListener, MDBHelper.IApiKeyInput{
 
     //region ATTRIBUTES
     public static final String EXTRA_MOVIE_KEY = "mdbMovieObj";
@@ -110,7 +110,7 @@ public class PostersActivity extends AppCompatActivity
 
     // region PRIVATE METHODS
     private void startMovieTask() {
-        new MDBMovieTask(this, this).execute();
+        MDBRetrofit.runMDBMovieTask(this, this);
     }
 
     private void showResults() {

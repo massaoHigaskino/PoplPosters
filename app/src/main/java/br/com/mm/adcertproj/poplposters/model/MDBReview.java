@@ -1,24 +1,33 @@
 package br.com.mm.adcertproj.poplposters.model;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-
-import br.com.mm.adcertproj.poplposters.helpers.JSONHelper;
 
 public class MDBReview implements Serializable {
 
     //region ATTRIBUTES
     public static final int serialVersionUID = 1;
 
-    private static final String MDM_ID = "id";
-    private static final String MDM_RESULTS = "results";
-    private static final String MDM_AUTHOR = "author";
-    private static final String MDM_CONTENT = "content";
+    /**
+     * Attribute name of the movie list, which is returned nested into the json response.
+     */
+    public static final String MDM_RESULTS = "results";
 
+    @SerializedName("id")
+    @Expose
     private String id;
+
+    @SerializedName("author")
+    @Expose
     private String author;
+
+    @SerializedName("content")
+    @Expose
     private String content;
     //endregion
 
@@ -49,27 +58,12 @@ public class MDBReview implements Serializable {
     //endregion
 
     // region PUBLIC METHODS
-    public static MDBReview[] listFromJSON(String json) {
-        MDBReview[] reviewsArray = null;
-        JSONObject mdbJson = JSONHelper.getJSONObject(json);
-        if(mdbJson != null) {
-            JSONArray reviewsJson = JSONHelper.getJSONArray(mdbJson, MDM_RESULTS);
-            if(reviewsJson != null && reviewsJson.length() > 0) {
-                reviewsArray = new MDBReview[reviewsJson.length()];
-                for(int i = 0; i < reviewsJson.length(); i++) {
-                    JSONObject reviewJson = reviewsJson.optJSONObject(i);
-                    MDBReview review = null;
-                    if(reviewJson != null) {
-                        review = new MDBReview();
-                        review.setId(reviewJson.optString(MDM_ID));
-                        review.setAuthor(reviewJson.optString(MDM_AUTHOR));
-                        review.setContent(reviewJson.optString(MDM_CONTENT));
-                    }
-                    reviewsArray[i] = review;
-                }
-            }
-        }
-        return reviewsArray;
+    public static MDBReview[] listFromGson(String json) throws JsonParseException {
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .registerTypeAdapter(MDBReview[].class, new MDBDeserializer<MDBReview[]>(MDM_RESULTS))
+                .create();
+        return gson.fromJson(json, MDBReview[].class);
     }
     //endregion
 }
