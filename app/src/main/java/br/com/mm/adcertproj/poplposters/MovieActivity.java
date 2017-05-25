@@ -10,17 +10,19 @@ import com.squareup.picasso.Picasso;
 
 import br.com.mm.adcertproj.poplposters.model.MDBMovie;
 import br.com.mm.adcertproj.poplposters.pref.MDBPreferences;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MovieActivity extends AppCompatActivity {
 
     // region ATTRIBUTES
     public static final String EXTRA_MOVIE_KEY = "mdbMovieObj";
 
-    private ImageView mPosterImageView;
-    private TextView mTitleTextView;
-    private TextView mRelDateTextView;
-    private TextView mVoteAveTextView;
-    private TextView mSynopsisTextView;
+    @BindView(R.id.iv_movie_poster) ImageView mPosterImageView;
+    @BindView(R.id.tv_movie_title) TextView mTitleTextView;
+    @BindView(R.id.tv_movie_release_date) TextView mRelDateTextView;
+    @BindView(R.id.tv_movie_vote_average) TextView mVoteAveTextView;
+    @BindView(R.id.tv_movie_plot_synopsis) TextView mSynopsisTextView;
     // endregion
 
     // region PROTECTED METHODS
@@ -28,12 +30,7 @@ public class MovieActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
-
-        mPosterImageView = (ImageView) findViewById(R.id.iv_movie_poster);
-        mTitleTextView = (TextView) findViewById(R.id.tv_movie_title);
-        mRelDateTextView = (TextView) findViewById(R.id.tv_movie_release_date);
-        mVoteAveTextView = (TextView) findViewById(R.id.tv_movie_vote_average);
-        mSynopsisTextView = (TextView) findViewById(R.id.tv_movie_plot_synopsis);
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         if(intent != null && intent.hasExtra(EXTRA_MOVIE_KEY)) {

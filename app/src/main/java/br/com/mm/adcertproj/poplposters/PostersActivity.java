@@ -15,6 +15,8 @@ import br.com.mm.adcertproj.poplposters.adapter.PostersAdapter;
 import br.com.mm.adcertproj.poplposters.helpers.MDBHelper;
 import br.com.mm.adcertproj.poplposters.model.MDBMovie;
 import br.com.mm.adcertproj.poplposters.tasks.MDBRetrofit;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class PostersActivity extends AppCompatActivity
         implements PostersAdapter.PostersClickListener, MDBRetrofit.MDBMovieTaskListener, MDBHelper.IApiKeyInput{
@@ -22,9 +24,9 @@ public class PostersActivity extends AppCompatActivity
     //region ATTRIBUTES
     public static final String EXTRA_MOVIE_KEY = "mdbMovieObj";
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_posters) RecyclerView mRecyclerView;
     private PostersAdapter mPostersAdapter;
-    private TextView mErrorTextView;
+    @BindView(R.id.tv_error) TextView mErrorTextView;
     // endregion
 
     // region PROTECTED METHODS
@@ -32,10 +34,9 @@ public class PostersActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posters);
+        ButterKnife.bind(this);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_posters);
         mPostersAdapter = new PostersAdapter(this);
-        mErrorTextView = (TextView) findViewById(R.id.tv_error);
 
         GridLayoutManager layoutManager =
                 new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
