@@ -1,30 +1,38 @@
 package br.com.mm.adcertproj.poplposters;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.sql.SQLException;
+import java.util.List;
 
 import br.com.mm.adcertproj.poplposters.adapter.PostersAdapter;
 import br.com.mm.adcertproj.poplposters.helpers.MDBHelper;
 import br.com.mm.adcertproj.poplposters.model.MDBMovie;
-import br.com.mm.adcertproj.poplposters.tasks.MDBMovieTask;
+import br.com.mm.adcertproj.poplposters.tasks.MDBRetrofit;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class PostersActivity extends AppCompatActivity
-        implements PostersAdapter.PostersClickListener, MDBMovieTask.MDBMovieTaskListener, MDBHelper.IApiKeyInput{
+        implements PostersAdapter.PostersClickListener, MDBRetrofit.MDBMovieTaskListener, MDBHelper.IApiKeyInput{
 
     //region ATTRIBUTES
     public static final String EXTRA_MOVIE_KEY = "mdbMovieObj";
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.rv_posters) RecyclerView mRecyclerView;
     private PostersAdapter mPostersAdapter;
-    private TextView mErrorTextView;
+    @BindView(R.id.tv_error) TextView mErrorTextView;
     // endregion
 
     // region PROTECTED METHODS
@@ -32,13 +40,16 @@ public class PostersActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posters);
+        ButterKnife.bind(this);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_posters);
         mPostersAdapter = new PostersAdapter(this);
-        mErrorTextView = (TextView) findViewById(R.id.tv_error);
 
+        int spanCount = 2;
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            spanCount = 3;
+        }
         GridLayoutManager layoutManager =
-                new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+                new GridLayoutManager(this, spanCount, GridLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -106,11 +117,28 @@ public class PostersActivity extends AppCompatActivity
     public void onApiKeyInput() {
         startMovieTask();
     }
+
+    @Override
+    public void onFavoritesOnly() {
+        List<MDBMovie> movies = null;
+        try {
+            movies = MDBMovie.queryForAll(this, MDBMovie.class);
+        } catch (SQLException e) {
+            Log.e(getClass().getName(), e.getMessage(), e);
+        }
+
+        if(movies != null && !movies.isEmpty()) {
+            showResults();
+            mPostersAdapter.setMovies(movies.toArray(new MDBMovie[movies.size()]));
+        } else {
+            Toast.makeText(this, R.string.empty_favorites_toast, Toast.LENGTH_LONG).show();
+        }
+    }
     // endregion
 
     // region PRIVATE METHODS
     private void startMovieTask() {
-        new MDBMovieTask(this, this).execute();
+        MDBRetrofit.runMDBMovieTask(this, this);
     }
 
     private void showResults() {
