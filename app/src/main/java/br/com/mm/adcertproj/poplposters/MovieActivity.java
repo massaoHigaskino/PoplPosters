@@ -3,10 +3,15 @@ package br.com.mm.adcertproj.poplposters;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,6 +57,9 @@ public class MovieActivity extends AppCompatActivity
     RecyclerView mReviewsRecyclerView;
     @BindView(R.id.fab_fav_it)
     FloatingActionButton mFavItFloatingActionButton;
+
+    private MenuItem shareMenuItem;
+    private ShareActionProvider mShareActionProvider;
 
     private VideosAdapter mVideosAdapter;
     private ReviewsAdapter mReviewsAdapter;
@@ -109,6 +117,16 @@ public class MovieActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.movie_menu, menu);
+
+        shareMenuItem = menu.findItem(R.id.action_share);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareMenuItem);
+        return true;
+    }
+
+    @Override
     public void onTaskResult(MDBReview[] taskResultArray) {
         if (taskResultArray != null && taskResultArray.length > 0) {
             showReviewsResults();
@@ -123,8 +141,13 @@ public class MovieActivity extends AppCompatActivity
         if (taskResultArray != null && taskResultArray.length > 0) {
             showTrailersResults();
             mVideosAdapter.setVideos(taskResultArray);
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, MDBPreferences.buildYouTubeUri(taskResultArray[0].getKey()).toString());
+            shareIntent.setType("text/plain");
+            setShareIntent(shareIntent);
         } else {
             showNoTrailersText();
+            setShareIntent(null);
         }
     }
 
@@ -236,6 +259,21 @@ public class MovieActivity extends AppCompatActivity
     private void updateFabIcon() {
         int fabResId = isSaved() ? android.R.drawable.ic_menu_delete : android.R.drawable.ic_menu_add;
         mFavItFloatingActionButton.setImageResource(fabResId);
+    }
+
+    private void setShareIntent(Intent shareIntent) {
+        if(shareIntent != null) {
+            if (mShareActionProvider != null) {
+                mShareActionProvider.setShareIntent(shareIntent);
+            }
+            if(shareMenuItem != null) {
+                shareMenuItem.setVisible(true);
+            }
+        } else {
+            if(shareMenuItem != null) {
+                shareMenuItem.setVisible(false);
+            }
+        }
     }
     // endregion
 }
