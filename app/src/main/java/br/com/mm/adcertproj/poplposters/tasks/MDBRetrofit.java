@@ -2,9 +2,13 @@ package br.com.mm.adcertproj.poplposters.tasks;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
 
+import java.util.List;
+
+import br.com.mm.adcertproj.poplposters.R;
 import br.com.mm.adcertproj.poplposters.helpers.AsyncTaskHelper;
 import br.com.mm.adcertproj.poplposters.model.MDBDeserializer;
 import br.com.mm.adcertproj.poplposters.model.MDBMovie;
@@ -55,11 +59,20 @@ public class MDBRetrofit {
                     }
 
                     @Override
-                    // remember onNext and onComplete will not be called after this method.
                     public void onError(@NonNull Throwable e) {
+                        Log.e(this.getClass().getName(), e.getMessage(), e);
+                        movies = null;
+                        try {
+                            List<MDBMovie> list = MDBMovie.queryForAll(context, MDBMovie.class);
+                            if(list != null && !list.isEmpty()) {
+                                movies = list.toArray(new MDBMovie[list.size()]);
+                            }
+                        } catch (Throwable e1) {
+                            Log.e(this.getClass().getName(), e1.getMessage(), e1);
+                        }
                         AsyncTaskHelper.dismissProgressDialog();
-                        Log.e(this.getClass().getName(), e.getMessage());
-                        listener.onTaskResult(null);
+                        Toast.makeText(context, R.string.showing_favorites_toast, Toast.LENGTH_LONG).show();
+                        listener.onTaskResult(movies);
                     }
 
                     @Override
@@ -70,7 +83,6 @@ public class MDBRetrofit {
                 });
     }
 
-    // TODO complete REST api call implementation
     public static void runMDBReviewTask(final Context context, final MDBReviewTaskListener listener, final MDBMovie movie) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MDBPreferences.POPULAR_MOVIES_URL)
@@ -82,7 +94,7 @@ public class MDBRetrofit {
                 .build();
 
         MDBApi mdbApi = retrofit.create(MDBApi.class);
-        Observable<MDBReview[]> reviews = mdbApi.getReviews(MDBPreferences.getSortType(), MDBPreferences.getValueApiKey());
+        Observable<MDBReview[]> reviews = mdbApi.getReviews(movie.getId(), MDBPreferences.getValueApiKey());
 
         reviews.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -97,24 +109,86 @@ public class MDBRetrofit {
                     @Override
                     public void onNext(@NonNull MDBReview[] mdbReviews) {
                         reviews = mdbReviews;
+
+                        // TODO this should be in another thread
+                        if(reviews != null) {
+                            for(MDBReview review : reviews) {
+                                review.setMovieId(movie.getId());
+                            }
+                        }
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-
+                        Log.e(this.getClass().getName(), e.getMessage(), e);
+                        reviews = null;
+                        try {
+                            reviews = MDBReview.listByMovieId(context, movie.getId());
+                        } catch (Throwable e1) {
+                            Log.e(this.getClass().getName(), e1.getMessage(), e1);
+                        }
+                        listener.onTaskResult(reviews);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        listener.onTaskResult(reviews);
                     }
                 });
-
-        throw new UnsupportedOperationException("Not yet implemented.");
     }
 
     public static void runMDBVideoTask(final Context context, final MDBVideoTaskListener listener, final MDBMovie movie) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(MDBPreferences.POPULAR_MOVIES_URL)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
+                        .excludeFieldsWithoutExposeAnnotation()
+                        .registerTypeAdapter(MDBVideo[].class, new MDBDeserializer<MDBVideo[]>(MDBVideo.MDM_RESULTS))
+                        .create()))
+                .build();
+
+        MDBApi mdbApi = retrofit.create(MDBApi.class);
+        Observable<MDBVideo[]> reviews = mdbApi.getVideos(movie.getId(), MDBPreferences.getValueApiKey());
+
+        reviews.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MDBVideo[]>() {
+                    private MDBVideo[] videos;
+
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull MDBVideo[] mdbVideos) {
+                        videos = mdbVideos;
+
+                        // TODO this should be in another thread
+                        if(videos != null) {
+                            for(MDBVideo video : videos) {
+                                video.setMovieId(movie.getId());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.e(this.getClass().getName(), e.getMessage(), e);
+                        videos = null;
+                        try {
+                            videos = MDBVideo.listByMovieId(context, movie.getId());
+                        } catch (Throwable e1) {
+                            Log.e(this.getClass().getName(), e1.getMessage(), e1);
+                        }
+                        listener.onTaskResult(videos);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onTaskResult(videos);
+                    }
+                });
     }
 
     public interface MDBApi {
@@ -122,10 +196,10 @@ public class MDBRetrofit {
         Observable<MDBMovie[]> getMovies(@Path("sort") String sortType, @Query("api_key") String apiKey);
 
         @GET("{id}/reviews?")
-        Observable<MDBReview[]> getReviews(@Path("id") String id, @Query("api_key") String apiKey);
+        Observable<MDBReview[]> getReviews(@Path("id") Integer id, @Query("api_key") String apiKey);
 
         @GET("{id}/videos?")
-        Observable<MDBVideo[]> getVideos(@Path("id") String id, @Query("api_key") String apiKey);
+        Observable<MDBVideo[]> getVideos(@Path("id") Integer id, @Query("api_key") String apiKey);
     }
 
     // region AUXILIARY CLASSES

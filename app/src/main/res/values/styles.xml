@@ -8,23 +8,69 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="GeneralTextView">
+    <style name="StartPadding">
         <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+    </style>
+
+    <style name="BottomPadding">
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
+    <style name="EndBottomPadding" parent="BottomPadding">
+        <item name="android:paddingEnd">16dp</item>
         <item name="android:paddingRight">16dp</item>
     </style>
 
-    <style name="MovieLabels" parent="GeneralTextView">
-        <item name="android:paddingTop">16dp</item>
+    <style name="HorizontalPadding" parent="StartPadding">
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+    </style>
+
+    <style name="MovieLabelHorizontalPadding" parent="HorizontalPadding">
         <item name="android:textSize">17sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="MovieValues" parent="GeneralTextView">
+    <style name="MovieLabelsWithPadding" parent="MovieLabelHorizontalPadding">
+        <item name="android:paddingTop">16dp</item>
+    </style>
+
+    <style name="MovieValues" parent="HorizontalPadding">
         <item name="android:textSize">22sp</item>
     </style>
 
-    <style name="CardValues">
-        <item name="android:paddingBottom">16dp</item>
+    <style name="GeneralLabelWoPadding">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AuthorNameLabel" parent="GeneralLabelWoPadding">
+        <item name="android:paddingRight">77dp</item>
+        <item name="android:paddingEnd">77dp</item>
+        <item name="android:gravity">right|end</item>
+    </style>
+
+    <style name="TrailerNameLabel" parent="MovieLabelHorizontalPadding">
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="PoplFAB" parent="EndBottomPadding">
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_gravity">end|bottom</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginBottom">16dp</item>
+    </style>
+
+    <style name="VideoItemImage" parent="StartPadding">
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="CardViewMargins">
+        <item name="android:layout_margin">3dp</item>
     </style>
 
 </resources>

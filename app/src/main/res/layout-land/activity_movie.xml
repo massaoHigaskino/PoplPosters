@@ -29,7 +29,7 @@
                         android:id="@+id/iv_movie_poster"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.5"
+                        android:layout_weight="0.7"
                         android:contentDescription="@string/movie_poster_alt"
                         android:scaleType="centerCrop" />
 
@@ -37,7 +37,7 @@
                         style="@style/BottomPadding"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
+                        android:layout_weight="0.3"
                         android:orientation="vertical">
 
                         <include layout="@layout/noroot_movie_main_info" />
@@ -68,5 +68,5 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_fav_it"
-        style="@style/PoplFAB" />
+        style="@style/PoplFAB"/>
 </FrameLayout>

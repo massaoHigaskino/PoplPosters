@@ -1,15 +1,21 @@
 package br.com.mm.adcertproj.poplposters;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.sql.SQLException;
+import java.util.List;
 
 import br.com.mm.adcertproj.poplposters.adapter.PostersAdapter;
 import br.com.mm.adcertproj.poplposters.helpers.MDBHelper;
@@ -38,8 +44,12 @@ public class PostersActivity extends AppCompatActivity
 
         mPostersAdapter = new PostersAdapter(this);
 
+        int spanCount = 2;
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            spanCount = 3;
+        }
         GridLayoutManager layoutManager =
-                new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+                new GridLayoutManager(this, spanCount, GridLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -106,6 +116,23 @@ public class PostersActivity extends AppCompatActivity
     @Override
     public void onApiKeyInput() {
         startMovieTask();
+    }
+
+    @Override
+    public void onFavoritesOnly() {
+        List<MDBMovie> movies = null;
+        try {
+            movies = MDBMovie.queryForAll(this, MDBMovie.class);
+        } catch (SQLException e) {
+            Log.e(getClass().getName(), e.getMessage(), e);
+        }
+
+        if(movies != null && !movies.isEmpty()) {
+            showResults();
+            mPostersAdapter.setMovies(movies.toArray(new MDBMovie[movies.size()]));
+        } else {
+            Toast.makeText(this, R.string.empty_favorites_toast, Toast.LENGTH_LONG).show();
+        }
     }
     // endregion
 

@@ -1,14 +1,21 @@
 package br.com.mm.adcertproj.poplposters.model;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.List;
 
-public class MDBReview implements Serializable {
+@DatabaseTable(tableName = "reviews")
+public class MDBReview extends MDBAbstract implements Serializable {
 
     //region ATTRIBUTES
     public static final int serialVersionUID = 1;
@@ -18,25 +25,37 @@ public class MDBReview implements Serializable {
      */
     public static final String MDM_RESULTS = "results";
 
-    @SerializedName("id")
-    @Expose
-    private String id;
+    @DatabaseField
+    private Integer movieId;
+
+    @DatabaseField(generatedId = true)
+    private Integer id;
 
     @SerializedName("author")
     @Expose
+    @DatabaseField
     private String author;
 
     @SerializedName("content")
     @Expose
+    @DatabaseField
     private String content;
     //endregion
 
     // region GETTERS & SETTERS
-    public String getId() {
+    public Integer getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(Integer movieId) {
+        this.movieId = movieId;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -64,6 +83,15 @@ public class MDBReview implements Serializable {
                 .registerTypeAdapter(MDBReview[].class, new MDBDeserializer<MDBReview[]>(MDM_RESULTS))
                 .create();
         return gson.fromJson(json, MDBReview[].class);
+    }
+
+    public static MDBReview[] listByMovieId(Context context, Integer id) throws SQLException {
+        List<MDBReview> results = MDBReview.getDao(context, MDBReview.class).queryBuilder().where().eq("movieId", id).query();
+        MDBReview[] resultsArray = null;
+        if(results != null && !results.isEmpty()) {
+            resultsArray = results.toArray(new MDBReview[results.size()]);
+        }
+        return resultsArray;
     }
     //endregion
 }

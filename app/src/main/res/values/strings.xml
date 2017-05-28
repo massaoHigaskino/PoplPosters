@@ -16,13 +16,21 @@
     <string name="progress_message">Pasting posters…</string>
     <string name="sort_popularity">Most Popular</string>
     <string name="sort_rating">Highest Rating</string>
+    <string name="sort_favorites">My Favorites Only</string>
 
     <!-- Movie DB API Key Input -->
     <string name="mdb_apikey_input_title">DEBUG - MDB API Key</string>
     <string name="mdb_apikey_input_message">This is a debug version. Please type in a valid API Key for MovieDB (leave the field bellow empty to keep the current key.)</string>
+
     <string name="movie_trailers">Trailers</string>
     <string name="movie_reviews">Reviews</string>
     <string name="no_trailers_text">Trailers not available for this movie.</string>
     <string name="no_reviews_text">Reviews not available for this movie.</string>
+
+    <string name="showing_favorites_toast">"theMDB" services are unreachable, now listing your local favorites</string>
+
+    <string name="movie_added_toast">Movie added to your favorites :)</string>
+    <string name="movie_removed_toast">Movie removed for good!</string>
+    <string name="empty_favorites_toast">Your favorites list is empty :(</string>
 
 </resources>

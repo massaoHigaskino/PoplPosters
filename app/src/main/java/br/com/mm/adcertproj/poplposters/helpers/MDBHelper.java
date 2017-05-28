@@ -18,7 +18,9 @@ public class MDBHelper {
     public static void showSortSpinner(Context context, final IApiKeyInput listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        String[] sortArray = {context.getString(R.string.sort_popularity), context.getString(R.string.sort_rating)};
+        String[] sortArray = {context.getString(R.string.sort_popularity),
+                context.getString(R.string.sort_rating),
+                context.getString(R.string.sort_favorites)};
 
         builder.setItems(sortArray, new DialogInterface.OnClickListener() {
             @Override
@@ -31,6 +33,9 @@ public class MDBHelper {
                     case 1:
                         MDBPreferences.setSortType(MDBPreferences.SORT_TOP_RATED);
                         break;
+                    case 2:
+                        listener.onFavoritesOnly();
+                        return;
                 }
                 listener.onApiKeyInput();
             }
@@ -76,6 +81,7 @@ public class MDBHelper {
     // region AUXILIARY CLASSES
     public interface IApiKeyInput {
         void onApiKeyInput();
+        void onFavoritesOnly();
     }
     // endregion
 

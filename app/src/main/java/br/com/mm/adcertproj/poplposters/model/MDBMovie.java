@@ -1,15 +1,21 @@
 package br.com.mm.adcertproj.poplposters.model;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.Date;
 
-public class MDBMovie implements Serializable {
+@DatabaseTable(tableName = "favorite_movies")
+public class MDBMovie extends MDBAbstract implements Serializable {
 
     //region ATTRIBUTES
     public static final int serialVersionUID = 1;
@@ -21,20 +27,24 @@ public class MDBMovie implements Serializable {
 
     @SerializedName("poster_path")
     @Expose
+    @DatabaseField
     private String posterPath;
 
     @SerializedName("adult")
     @Expose
+    @DatabaseField
     private Boolean adult;
 
     @SerializedName("overview")
     @Expose
+    @DatabaseField
     private String overview;
 
     private Date releaseDate;
 
     @SerializedName("release_date")
     @Expose
+    @DatabaseField
     private String releaseDateString;
 
     @SerializedName("genre_ids")
@@ -43,40 +53,54 @@ public class MDBMovie implements Serializable {
 
     @SerializedName("id")
     @Expose
+    @DatabaseField(id = true)
     private Integer id;
 
     @SerializedName("original_title")
     @Expose
+    @DatabaseField
     private String originalTitle;
 
     @SerializedName("original_language")
     @Expose
+    @DatabaseField
     private String originalLanguage;
 
     @SerializedName("title")
     @Expose
+    @DatabaseField
     private String title;
 
     @SerializedName("backdrop_path")
     @Expose
+    @DatabaseField
     private String backdropPath;
 
     @SerializedName("popularity")
     @Expose
+    @DatabaseField
     private Double popularity;
 
     @SerializedName("vote_count")
     @Expose
+    @DatabaseField
     private Integer voteCount;
 
     @SerializedName("video")
     @Expose
+    @DatabaseField
     private Boolean video;
 
     @SerializedName("vote_average")
     @Expose
+    @DatabaseField
     private Double voteAverage;
     // endregion
+
+    /**
+     * ORMLite required constructor.
+     */
+    public MDBMovie() {}
 
     // region GETTERS & SETTERS
     public String getPosterPath() {
@@ -207,6 +231,10 @@ public class MDBMovie implements Serializable {
                 .registerTypeAdapter(MDBMovie[].class, new MDBDeserializer<MDBMovie[]>(MDM_RESULTS))
                 .create();
         return gson.fromJson(json, MDBMovie[].class);
+    }
+
+    public boolean idExists(Context context) throws SQLException {
+        return getDao(context).idExists(getId());
     }
     // endregion
 }

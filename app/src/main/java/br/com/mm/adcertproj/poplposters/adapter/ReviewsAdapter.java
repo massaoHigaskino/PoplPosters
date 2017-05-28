@@ -21,6 +21,11 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
         this.mReviews = reviews;
         notifyDataSetChanged();
     }
+
+    public MDBReview[] getReviews() {
+        return mReviews;
+    }
+
     @Override
     public ReviewsViewsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();

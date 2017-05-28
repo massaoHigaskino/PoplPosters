@@ -27,6 +27,10 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
         notifyDataSetChanged();
     }
 
+    public MDBVideo[] getVideos() {
+        return mVideos;
+    }
+
     @Override
     public VideosViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
