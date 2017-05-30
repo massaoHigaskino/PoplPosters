@@ -6,16 +6,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.sql.SQLException;
-import java.util.List;
 
 import br.com.mm.adcertproj.poplposters.adapter.PostersAdapter;
 import br.com.mm.adcertproj.poplposters.helpers.MDBHelper;
@@ -120,16 +116,12 @@ public class PostersActivity extends AppCompatActivity
 
     @Override
     public void onFavoritesOnly() {
-        List<MDBMovie> movies = null;
-        try {
-            movies = MDBMovie.queryForAll(this, MDBMovie.class);
-        } catch (SQLException e) {
-            Log.e(getClass().getName(), e.getMessage(), e);
-        }
+        MDBMovie[] movies = MDBMovie.listFromCursor(getContentResolver()
+                .query(MDBContentProvider.buildMovieContentUri(), null, null, null, null));
 
-        if(movies != null && !movies.isEmpty()) {
+        if(movies != null && movies.length > 0) {
             showResults();
-            mPostersAdapter.setMovies(movies.toArray(new MDBMovie[movies.size()]));
+            mPostersAdapter.setMovies(movies);
         } else {
             Toast.makeText(this, R.string.empty_favorites_toast, Toast.LENGTH_LONG).show();
         }

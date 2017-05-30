@@ -70,7 +70,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            if(mClickListener != null && mVideos != null && mVideos.length > adapterPosition && adapterPosition >= 0) {
+            if(mClickListener != null && mVideos != null
+                    && mVideos.length > adapterPosition && adapterPosition >= 0) {
                 mClickListener.onVideosClick(mVideos[adapterPosition]);
             }
         }

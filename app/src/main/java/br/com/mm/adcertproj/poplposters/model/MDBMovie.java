@@ -1,7 +1,6 @@
 package br.com.mm.adcertproj.poplposters.model;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 
 import com.google.gson.annotations.Expose;
@@ -10,7 +9,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 
 @DatabaseTable(tableName = "favorite_movies")
 public class MDBMovie extends MDBAbstract implements Serializable {
@@ -103,11 +101,18 @@ public class MDBMovie extends MDBAbstract implements Serializable {
     // endregion
 
     // region PUBLIC METHODS
-    public boolean idExists(Context context) throws SQLException {
-        return getDao(context).idExists(getId());
+    public ContentValues createContentValues() {
+        ContentValues contentValues = new ContentValues(6);
+        contentValues.put(ID_COLUMN, id);
+        contentValues.put(TITLE_COLUMN, title);
+        contentValues.put(VOTE_AVE_COLUMN, voteAverage);
+        contentValues.put(REL_DATE_COLUMN, releaseDateString);
+        contentValues.put(OVERVIEW_COLUMN, overview);
+        contentValues.put(POSTER_COLUMN, posterPath);
+        return contentValues;
     }
 
-    public MDBMovie[] listFromCursor(Cursor cursor) {
+    public static MDBMovie[] listFromCursor(Cursor cursor) {
         if(cursor == null || cursor.getCount() <= 0) {
             return null;
         }
@@ -124,18 +129,9 @@ public class MDBMovie extends MDBAbstract implements Serializable {
             movies[i] = new MDBMovie(id, title, voteAverage, releaseDateString, overview, posterPath);
         }
 
-        return movies;
-    }
+        cursor.close();
 
-    public ContentValues createContentValues() {
-        ContentValues contentValues = new ContentValues(6);
-        contentValues.put(ID_COLUMN, id);
-        contentValues.put(TITLE_COLUMN, title);
-        contentValues.put(VOTE_AVE_COLUMN, voteAverage);
-        contentValues.put(REL_DATE_COLUMN, releaseDateString);
-        contentValues.put(OVERVIEW_COLUMN, overview);
-        contentValues.put(POSTER_COLUMN, posterPath);
-        return contentValues;
+        return movies;
     }
     // endregion
 }

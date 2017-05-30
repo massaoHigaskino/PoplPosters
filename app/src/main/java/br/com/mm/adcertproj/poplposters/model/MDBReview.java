@@ -1,7 +1,6 @@
 package br.com.mm.adcertproj.poplposters.model;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 
 import com.google.gson.annotations.Expose;
@@ -10,8 +9,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.List;
 
 @DatabaseTable(tableName = "reviews")
 public class MDBReview extends MDBAbstract implements Serializable {
@@ -74,16 +71,16 @@ public class MDBReview extends MDBAbstract implements Serializable {
     //endregion
 
     // region PUBLIC METHODS
-    public static MDBReview[] listByMovieId(Context context, Integer id) throws SQLException {
-        List<MDBReview> results = MDBReview.getDao(context, MDBReview.class).queryBuilder().where().eq("movieId", id).query();
-        MDBReview[] resultsArray = null;
-        if(results != null && !results.isEmpty()) {
-            resultsArray = results.toArray(new MDBReview[results.size()]);
-        }
-        return resultsArray;
+    public ContentValues createContentValues() {
+        ContentValues contentValues = new ContentValues(4);
+        contentValues.put(ID_COLUMN, id);
+        contentValues.put(MOVIE_ID_COLUMN, movieId);
+        contentValues.put(AUTHOR_COLUMN, author);
+        contentValues.put(CONTENT_COLUMN, content);
+        return contentValues;
     }
 
-    public MDBReview[] listFromCursor(Cursor cursor) {
+    public static MDBReview[] listFromCursor(Cursor cursor) {
         if(cursor == null || cursor.getCount() <= 0) {
             return null;
         }
@@ -98,16 +95,9 @@ public class MDBReview extends MDBAbstract implements Serializable {
             reviews[i] = new MDBReview(id, movieId, author, content);
         }
 
-        return reviews;
-    }
+        cursor.close();
 
-    public ContentValues createContentValues() {
-        ContentValues contentValues = new ContentValues(4);
-        contentValues.put(ID_COLUMN, id);
-        contentValues.put(MOVIE_ID_COLUMN, movieId);
-        contentValues.put(AUTHOR_COLUMN, author);
-        contentValues.put(CONTENT_COLUMN, content);
-        return contentValues;
+        return reviews;
     }
     //endregion
 }

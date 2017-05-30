@@ -54,7 +54,8 @@ public class MDBHelper {
 
         final EditText inputKey = new EditText(context);
         inputKey.setInputType(InputType.TYPE_CLASS_TEXT);
-        inputKey.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        inputKey.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         final LinearLayout container = new LinearLayout(context);
         //container.addView(alertMessage);

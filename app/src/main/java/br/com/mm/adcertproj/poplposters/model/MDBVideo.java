@@ -1,7 +1,6 @@
 package br.com.mm.adcertproj.poplposters.model;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 
 import com.google.gson.annotations.Expose;
@@ -10,8 +9,6 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.List;
 
 @DatabaseTable(tableName = "videos")
 public class MDBVideo extends MDBAbstract implements Serializable {
@@ -74,16 +71,16 @@ public class MDBVideo extends MDBAbstract implements Serializable {
     //endregion
 
     // region PUBLIC METHODS
-    public static MDBVideo[] listByMovieId(Context context, Integer id) throws SQLException {
-        List<MDBVideo> results = MDBVideo.getDao(context, MDBVideo.class).queryBuilder().where().eq("movieId", id).query();
-        MDBVideo[] resultsArray = null;
-        if(results != null && !results.isEmpty()) {
-            resultsArray = results.toArray(new MDBVideo[results.size()]);
-        }
-        return resultsArray;
+    public ContentValues createContentValues() {
+        ContentValues contentValues = new ContentValues(4);
+        contentValues.put(ID_COLUMN, id);
+        contentValues.put(MOVIE_ID_COLUMN, movieId);
+        contentValues.put(KEY_COLUMN, key);
+        contentValues.put(NAME_COLUMN, name);
+        return contentValues;
     }
 
-    public MDBVideo[] listFromCursor(Cursor cursor) {
+    public static MDBVideo[] listFromCursor(Cursor cursor) {
         if(cursor == null || cursor.getCount() <= 0) {
             return null;
         }
@@ -98,16 +95,9 @@ public class MDBVideo extends MDBAbstract implements Serializable {
             videos[i] = new MDBVideo(id, movieId, key, name);
         }
 
-        return videos;
-    }
+        cursor.close();
 
-    public ContentValues createContentValues() {
-        ContentValues contentValues = new ContentValues(4);
-        contentValues.put(ID_COLUMN, id);
-        contentValues.put(MOVIE_ID_COLUMN, movieId);
-        contentValues.put(KEY_COLUMN, key);
-        contentValues.put(NAME_COLUMN, name);
-        return contentValues;
+        return videos;
     }
     //endregion
 }

@@ -53,7 +53,7 @@ public class MDBContentProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        String table = null;
+        String table;
         selection = null;
         selectionArgs = null;
         switch (uriMatcher.match(uri)) {
@@ -97,6 +97,7 @@ public class MDBContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+        if(values == null) return null;
         String table;
         String path;
         String id;
@@ -133,7 +134,7 @@ public class MDBContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        String table = null;
+        String table;
         selection = "1";
         selectionArgs = null;
         switch (uriMatcher.match(uri)) {
@@ -172,5 +173,43 @@ public class MDBContentProvider extends ContentProvider {
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection,
                       @Nullable String[] selectionArgs) {
         return 0;
+    }
+
+
+    public static final Uri BASE_CONTENT_URI =
+            Uri.parse("content://" + MDBContentProvider.AUTHORITY_NAME);
+    public static Uri buildMovieIdContentUri(Integer movieId) {
+        return buildMovieContentUri().buildUpon()
+                .appendPath(movieId.toString()).build();
+    }
+
+    public static Uri buildMovieContentUri() {
+        return BASE_CONTENT_URI.buildUpon()
+                .appendPath(MDBContentProvider.MOVIE_QUERY_PATH)
+                .build();
+    }
+
+    public static Uri buildVideoByMovieIdContentUri(Integer movieId) {
+        return buildVideoContentUri().buildUpon()
+                .appendPath(movieId.toString())
+                .build();
+    }
+
+    public static Uri buildVideoContentUri() {
+        return BASE_CONTENT_URI.buildUpon()
+                .appendPath(MDBContentProvider.VIDEO_QUERY_PATH)
+                .build();
+    }
+
+    public static Uri buildReviewByMovieIdContentUri(Integer movieId) {
+        return buildReviewContentUri().buildUpon()
+                .appendPath(movieId.toString())
+                .build();
+    }
+
+    public static Uri buildReviewContentUri() {
+        return BASE_CONTENT_URI.buildUpon()
+                .appendPath(MDBContentProvider.REVIEW_QUERY_PATH)
+                .build();
     }
 }

@@ -27,7 +27,8 @@ public class MDBDeserializer<T> implements JsonDeserializer<T> {
     }
 
     @Override
-    public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException {
         JsonElement content = json.getAsJsonObject().get(nestedAttrName);
         return new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()

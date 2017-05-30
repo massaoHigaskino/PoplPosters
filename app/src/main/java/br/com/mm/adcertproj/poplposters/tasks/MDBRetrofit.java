@@ -6,8 +6,6 @@ import android.widget.Toast;
 
 import com.google.gson.GsonBuilder;
 
-import java.util.List;
-
 import br.com.mm.adcertproj.poplposters.R;
 import br.com.mm.adcertproj.poplposters.helpers.AsyncTaskHelper;
 import br.com.mm.adcertproj.poplposters.model.MDBDeserializer;
@@ -28,20 +26,27 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+import static br.com.mm.adcertproj.poplposters.MDBContentProvider.buildMovieContentUri;
+import static br.com.mm.adcertproj.poplposters.MDBContentProvider.buildReviewByMovieIdContentUri;
+import static br.com.mm.adcertproj.poplposters.MDBContentProvider.buildVideoByMovieIdContentUri;
+
 public class MDBRetrofit {
 
-    public static void runMDBMovieTask(final Context context, final MDBMovieTaskListener listener) {
+    public static void runMDBMovieTask(final Context context,
+                                       final MDBMovieTaskListener listener) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MDBPreferences.POPULAR_MOVIES_URL)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
                         .excludeFieldsWithoutExposeAnnotation()
-                        .registerTypeAdapter(MDBMovie[].class, new MDBDeserializer<MDBMovie[]>(MDBMovie.MDM_RESULTS))
+                        .registerTypeAdapter(MDBMovie[].class,
+                                new MDBDeserializer<MDBMovie[]>(MDBMovie.MDM_RESULTS))
                         .create()))
                 .build();
 
         MDBApi mdbApi = retrofit.create(MDBApi.class);
-        Observable<MDBMovie[]> movies = mdbApi.getMovies(MDBPreferences.getSortType(), MDBPreferences.getValueApiKey());
+        Observable<MDBMovie[]> movies = mdbApi.getMovies(MDBPreferences.getSortType(),
+                MDBPreferences.getValueApiKey());
 
         movies.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -61,17 +66,11 @@ public class MDBRetrofit {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.e(this.getClass().getName(), e.getMessage(), e);
-                        movies = null;
-                        try {
-                            List<MDBMovie> list = MDBMovie.queryForAll(context, MDBMovie.class);
-                            if(list != null && !list.isEmpty()) {
-                                movies = list.toArray(new MDBMovie[list.size()]);
-                            }
-                        } catch (Throwable e1) {
-                            Log.e(this.getClass().getName(), e1.getMessage(), e1);
-                        }
+                        movies = MDBMovie.listFromCursor(context.getContentResolver()
+                                .query(buildMovieContentUri(), null, null, null, null));
                         AsyncTaskHelper.dismissProgressDialog();
-                        Toast.makeText(context, R.string.showing_favorites_toast, Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                                context, R.string.showing_favorites_toast, Toast.LENGTH_LONG).show();
                         listener.onTaskResult(movies);
                     }
 
@@ -83,18 +82,22 @@ public class MDBRetrofit {
                 });
     }
 
-    public static void runMDBReviewTask(final Context context, final MDBReviewTaskListener listener, final MDBMovie movie) {
+    public static void runMDBReviewTask(final Context context,
+                                        final MDBReviewTaskListener listener,
+                                        final MDBMovie movie) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MDBPreferences.POPULAR_MOVIES_URL)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
                         .excludeFieldsWithoutExposeAnnotation()
-                        .registerTypeAdapter(MDBReview[].class, new MDBDeserializer<MDBReview[]>(MDBReview.MDM_RESULTS))
+                        .registerTypeAdapter(MDBReview[].class,
+                                new MDBDeserializer<MDBReview[]>(MDBReview.MDM_RESULTS))
                         .create()))
                 .build();
 
         MDBApi mdbApi = retrofit.create(MDBApi.class);
-        Observable<MDBReview[]> reviews = mdbApi.getReviews(movie.getId(), MDBPreferences.getValueApiKey());
+        Observable<MDBReview[]> reviews = mdbApi.getReviews(movie.getId(),
+                MDBPreferences.getValueApiKey());
 
         reviews.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -121,12 +124,9 @@ public class MDBRetrofit {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.e(this.getClass().getName(), e.getMessage(), e);
-                        reviews = null;
-                        try {
-                            reviews = MDBReview.listByMovieId(context, movie.getId());
-                        } catch (Throwable e1) {
-                            Log.e(this.getClass().getName(), e1.getMessage(), e1);
-                        }
+                        reviews = MDBReview.listFromCursor(context.getContentResolver()
+                                .query(buildReviewByMovieIdContentUri(movie.getId()),
+                                        null, null, null, null));
                         listener.onTaskResult(reviews);
                     }
 
@@ -137,18 +137,22 @@ public class MDBRetrofit {
                 });
     }
 
-    public static void runMDBVideoTask(final Context context, final MDBVideoTaskListener listener, final MDBMovie movie) {
+    public static void runMDBVideoTask(final Context context,
+                                       final MDBVideoTaskListener listener,
+                                       final MDBMovie movie) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MDBPreferences.POPULAR_MOVIES_URL)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
                         .excludeFieldsWithoutExposeAnnotation()
-                        .registerTypeAdapter(MDBVideo[].class, new MDBDeserializer<MDBVideo[]>(MDBVideo.MDM_RESULTS))
+                        .registerTypeAdapter(MDBVideo[].class,
+                                new MDBDeserializer<MDBVideo[]>(MDBVideo.MDM_RESULTS))
                         .create()))
                 .build();
 
         MDBApi mdbApi = retrofit.create(MDBApi.class);
-        Observable<MDBVideo[]> reviews = mdbApi.getVideos(movie.getId(), MDBPreferences.getValueApiKey());
+        Observable<MDBVideo[]> reviews = mdbApi.getVideos(movie.getId(),
+                MDBPreferences.getValueApiKey());
 
         reviews.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -175,12 +179,9 @@ public class MDBRetrofit {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.e(this.getClass().getName(), e.getMessage(), e);
-                        videos = null;
-                        try {
-                            videos = MDBVideo.listByMovieId(context, movie.getId());
-                        } catch (Throwable e1) {
-                            Log.e(this.getClass().getName(), e1.getMessage(), e1);
-                        }
+                        videos = MDBVideo.listFromCursor(context.getContentResolver()
+                                .query(buildVideoByMovieIdContentUri(movie.getId()),
+                                        null, null, null, null));
                         listener.onTaskResult(videos);
                     }
 
@@ -193,13 +194,16 @@ public class MDBRetrofit {
 
     public interface MDBApi {
         @GET("{sort}?")
-        Observable<MDBMovie[]> getMovies(@Path("sort") String sortType, @Query("api_key") String apiKey);
+        Observable<MDBMovie[]> getMovies(@Path("sort") String sortType,
+                                         @Query("api_key") String apiKey);
 
         @GET("{id}/reviews?")
-        Observable<MDBReview[]> getReviews(@Path("id") Integer id, @Query("api_key") String apiKey);
+        Observable<MDBReview[]> getReviews(@Path("id") Integer id,
+                                           @Query("api_key") String apiKey);
 
         @GET("{id}/videos?")
-        Observable<MDBVideo[]> getVideos(@Path("id") Integer id, @Query("api_key") String apiKey);
+        Observable<MDBVideo[]> getVideos(@Path("id") Integer id,
+                                         @Query("api_key") String apiKey);
     }
 
     // region AUXILIARY CLASSES
