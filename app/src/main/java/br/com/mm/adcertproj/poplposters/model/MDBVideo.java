@@ -1,6 +1,8 @@
 package br.com.mm.adcertproj.poplposters.model;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -16,6 +18,11 @@ public class MDBVideo extends MDBAbstract implements Serializable {
 
     //region ATTRIBUTES
     public static final int serialVersionUID = 1;
+    public static final String TABLE_NAME = "videos";
+    public static final String ID_COLUMN = "id";
+    public static final String MOVIE_ID_COLUMN = "movieId";
+    public static final String KEY_COLUMN = "key";
+    public static final String NAME_COLUMN = "name";
 
     /**
      * Attribute name of the movie list, which is returned nested into the json response.
@@ -39,6 +46,19 @@ public class MDBVideo extends MDBAbstract implements Serializable {
     private String name;
     //endregion
 
+    /**
+     * ORMLite required constructor.
+     */
+    public MDBVideo() {
+    }
+
+    public MDBVideo(Integer id, Integer movieId, String key, String name) {
+        this.id = id;
+        this.movieId = movieId;
+        this.key = key;
+        this.name = name;
+    }
+
     // region GETTERS & SETTERS
     public void setMovieId(Integer movieId) {
         this.movieId = movieId;
@@ -61,6 +81,33 @@ public class MDBVideo extends MDBAbstract implements Serializable {
             resultsArray = results.toArray(new MDBVideo[results.size()]);
         }
         return resultsArray;
+    }
+
+    public MDBVideo[] listFromCursor(Cursor cursor) {
+        if(cursor == null || cursor.getCount() <= 0) {
+            return null;
+        }
+        MDBVideo[] videos = new MDBVideo[cursor.getCount()];
+
+        for(int i = 0; i < cursor.getCount(); i++) {
+            cursor.moveToPosition(i);
+            Integer id = cursor.getInt(cursor.getColumnIndex(ID_COLUMN));
+            Integer movieId = cursor.getInt(cursor.getColumnIndex(MOVIE_ID_COLUMN));
+            String key = cursor.getString(cursor.getColumnIndex(KEY_COLUMN));
+            String name = cursor.getString(cursor.getColumnIndex(NAME_COLUMN));
+            videos[i] = new MDBVideo(id, movieId, key, name);
+        }
+
+        return videos;
+    }
+
+    public ContentValues createContentValues() {
+        ContentValues contentValues = new ContentValues(4);
+        contentValues.put(ID_COLUMN, id);
+        contentValues.put(MOVIE_ID_COLUMN, movieId);
+        contentValues.put(KEY_COLUMN, key);
+        contentValues.put(NAME_COLUMN, name);
+        return contentValues;
     }
     //endregion
 }
