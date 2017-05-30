@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!--Floating action button-->
+    <dimen name="vertical_padding">16dp</dimen>
+    <dimen name="horizontal_padding">16dp</dimen>
     <dimen name="design_fab_image_size" tools:override="true">45dp</dimen>
+    <dimen name="layout_weight_zero_dp">0dp</dimen>
+    <dimen name="main_movie_details_min_height">220dp</dimen>
+    <dimen name="video_list_item_min_height">64dp</dimen>
 
 </resources>

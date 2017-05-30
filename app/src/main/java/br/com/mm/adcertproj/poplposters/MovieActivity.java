@@ -1,6 +1,8 @@
 package br.com.mm.adcertproj.poplposters;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
@@ -8,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,8 +20,6 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.sql.SQLException;
-
 import br.com.mm.adcertproj.poplposters.adapter.ReviewsAdapter;
 import br.com.mm.adcertproj.poplposters.adapter.VideosAdapter;
 import br.com.mm.adcertproj.poplposters.model.MDBMovie;
@@ -30,6 +29,13 @@ import br.com.mm.adcertproj.poplposters.pref.MDBPreferences;
 import br.com.mm.adcertproj.poplposters.tasks.MDBRetrofit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static br.com.mm.adcertproj.poplposters.MDBContentProvider.buildMovieContentUri;
+import static br.com.mm.adcertproj.poplposters.MDBContentProvider.buildMovieIdContentUri;
+import static br.com.mm.adcertproj.poplposters.MDBContentProvider.buildReviewByMovieIdContentUri;
+import static br.com.mm.adcertproj.poplposters.MDBContentProvider.buildReviewContentUri;
+import static br.com.mm.adcertproj.poplposters.MDBContentProvider.buildVideoByMovieIdContentUri;
+import static br.com.mm.adcertproj.poplposters.MDBContentProvider.buildVideoContentUri;
 
 public class MovieActivity extends AppCompatActivity
         implements VideosAdapter.VideosClickListener, MDBRetrofit.MDBVideoTaskListener, MDBRetrofit.MDBReviewTaskListener {
@@ -192,10 +198,11 @@ public class MovieActivity extends AppCompatActivity
     private boolean isSaved() {
         boolean isSaved = false;
         if (movie != null && movie.getId() != null) {
-            try {
-                isSaved = movie.idExists(this);
-            } catch (SQLException e) {
-                Log.e(getClass().getName(), e.getMessage(), e);
+            Cursor cursor = getContentResolver().query(buildMovieIdContentUri(
+                    movie.getId()), null, null, null, null);
+            if(cursor != null) {
+                isSaved = cursor.getCount() > 0;
+                cursor.close();
             }
         }
         return isSaved;
@@ -204,40 +211,36 @@ public class MovieActivity extends AppCompatActivity
     private void togglePersistMovie() {
         if (movie != null) {
             boolean isSaved = isSaved();
-            try {
-                if (isSaved) {
-                    movie.delete(this);
-                } else {
-                    movie.createOrUpdate(this);
-                }
-            } catch (SQLException e) {
-                Log.e(getClass().getName(), e.getMessage(), e);
+
+            ContentResolver contentResolver = getContentResolver();
+            if (isSaved) {
+                contentResolver
+                        .delete(buildMovieIdContentUri(movie.getId()), null, null);
+            } else {
+                contentResolver
+                        .insert(buildMovieContentUri(), movie.createContentValues());
             }
 
-            if (mVideosAdapter.getVideos() != null) {
-                for (MDBVideo video : mVideosAdapter.getVideos()) {
-                    try {
-                        if (isSaved) {
-                            video.delete(this);
-                        } else {
-                            video.createOrUpdate(this);
-                        }
-                    } catch (SQLException e) {
-                        Log.e(getClass().getName(), e.getMessage(), e);
+            if (isSaved) {
+                contentResolver
+                        .delete(buildVideoByMovieIdContentUri(movie.getId()), null, null);
+            } else {
+                if (mVideosAdapter.getVideos() != null) {
+                    for (MDBVideo video : mVideosAdapter.getVideos()) {
+                        contentResolver
+                                .insert(buildVideoContentUri(), video.createContentValues());
                     }
                 }
             }
 
-            if (mReviewsAdapter.getReviews() != null) {
-                for (MDBReview review : mReviewsAdapter.getReviews()) {
-                    try {
-                        if (isSaved) {
-                            review.delete(this);
-                        } else {
-                            review.createOrUpdate(this);
-                        }
-                    } catch (SQLException e) {
-                        Log.e(getClass().getName(), e.getMessage(), e);
+            if (isSaved) {
+                contentResolver
+                        .delete(buildReviewByMovieIdContentUri(movie.getId()), null, null);
+            } else {
+                if (mReviewsAdapter.getReviews() != null) {
+                    for (MDBReview review : mReviewsAdapter.getReviews()) {
+                        contentResolver
+                                .insert(buildReviewContentUri(), review.createContentValues());
                     }
                 }
             }
@@ -275,5 +278,6 @@ public class MovieActivity extends AppCompatActivity
             }
         }
     }
+
     // endregion
 }

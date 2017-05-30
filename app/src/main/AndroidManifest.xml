@@ -24,6 +24,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".PostersActivity"/>
         </activity>
+        
+        <provider
+            android:authorities="br.com.mm.adcertproj.poplposters"
+            android:name=".MDBContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

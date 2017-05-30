@@ -9,22 +9,22 @@
     </style>
 
     <style name="StartPadding">
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingLeft">@dimen/horizontal_padding</item>
+        <item name="android:paddingStart">@dimen/horizontal_padding</item>
     </style>
 
     <style name="BottomPadding">
-        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingBottom">@dimen/vertical_padding</item>
     </style>
 
     <style name="EndBottomPadding" parent="BottomPadding">
-        <item name="android:paddingEnd">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingEnd">@dimen/horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/horizontal_padding</item>
     </style>
 
     <style name="HorizontalPadding" parent="StartPadding">
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingRight">@dimen/horizontal_padding</item>
+        <item name="android:paddingEnd">@dimen/horizontal_padding</item>
     </style>
 
     <style name="MovieLabelHorizontalPadding" parent="HorizontalPadding">
@@ -33,7 +33,7 @@
     </style>
 
     <style name="MovieLabelsWithPadding" parent="MovieLabelHorizontalPadding">
-        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingTop">@dimen/vertical_padding</item>
     </style>
 
     <style name="MovieValues" parent="HorizontalPadding">
@@ -60,9 +60,9 @@
         <item name="android:layout_height">45dp</item>
         <item name="android:layout_gravity">end|bottom</item>
         <item name="android:elevation">4dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
-        <item name="android:layout_marginRight">16dp</item>
-        <item name="android:layout_marginBottom">16dp</item>
+        <item name="android:layout_marginEnd">@dimen/horizontal_padding</item>
+        <item name="android:layout_marginRight">@dimen/horizontal_padding</item>
+        <item name="android:layout_marginBottom">@dimen/vertical_padding</item>
     </style>
 
     <style name="VideoItemImage" parent="StartPadding">

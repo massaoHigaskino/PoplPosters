@@ -71,13 +71,15 @@ public class PostersAdapter extends RecyclerView.Adapter<PostersAdapter.PostersV
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            if(mClickHandler != null && mMovies != null && mMovies.length > adapterPosition && adapterPosition >= 0) {
+            if(mClickHandler != null && mMovies != null
+                    && mMovies.length > adapterPosition && adapterPosition >= 0) {
                 mClickHandler.onPostersClick(mMovies[adapterPosition]);
             }
         }
 
         public void bind(MDBMovie movie) {
-            Picasso.with(context).load(MDBPreferences.buildPosterUrl(movie.getPosterPath())).into(posterImageView);
+            Picasso.with(context).load(MDBPreferences
+                    .buildPosterUrl(movie.getPosterPath())).into(posterImageView);
         }
     }
     // endregion
